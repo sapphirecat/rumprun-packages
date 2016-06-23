@@ -7,9 +7,12 @@ LIBS=$(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRU
 # Mega build: all currently available features.
 all: CONFIGURE_OPTS := --enable-cli \
 	--enable-zip --enable-mbstring --enable-sockets \
-	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --without-pdo-sqlite \
+	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite=no \
 	--enable-bcmath --enable-calendar --enable-ctype --enable-exif \
 	--enable-ftp --enable-soap \
+	--with-gd --with-jpeg-dir=$(RUMPRUN_PKGS_DIR) --with-png-dir=$(RUMPRUN_PKGS_DIR) \
+		--without-webp-dir --without-xpm-dir \
+		--without-freetype-dir --enable-gd-native-ttf --enable-gd-jis-conv \
 	--with-curl=$(RUMPRUN_PKGS_DIR) --with-libxml-dir=$(RUMPRUN_PKGS_DIR)
 
 all: bin/php-cgi bin/php images $(LIBS)
@@ -19,6 +22,14 @@ include ../Makefile.deps
 .NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libcurl.a
 $(RUMPRUN_PKGS_DIR)/lib/libcurl.a:
 	$(MAKE) -C ../libcurl
+
+.NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libjpeg.a
+$(RUMPRUN_PKGS_DIR)/lib/libjpeg.a:
+	$(MAKE) -C ../libjpeg-turbo
+
+.NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libpng16.a
+$(RUMPRUN_PKGS_DIR)/lib/libpng16.a:
+	$(MAKE) -C ../libpng
 
 .NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libxml2.a
 $(RUMPRUN_PKGS_DIR)/lib/libxml2.a:
