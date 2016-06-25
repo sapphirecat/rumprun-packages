@@ -14,9 +14,16 @@ endif
 endif
 
 ifeq ($(CONFIGURE_OPTS),)
+
+# Super hack! we want to use the ALREADY INCLUDED zlib.h, so we have to find
+# it (using gcc -M) and, effectively, dirname() it a couple of times.
+# But carefully, since '-: .../zlib.h' and 'TAB .../zlib.h' are valid lines.
+_awk := '/zlib.h/ { n=split($$0, p, "/"); r=""; for (i=2; i<= n-2; i++) { r=r "/" p[i]; } print r; }'
+
 # Mega build: all currently available features.
 CONFIGURE_OPTS := --enable-cli \
-	--enable-zip --enable-mbstring --enable-sockets \
+	--enable-zip --with-zlib --enable-mbstring --enable-sockets \
+	--with-zlib-dir=$(shell echo "\#include <zlib.h>" | $(RUMPRUN_TOOLCHAIN_TUPLE)-gcc -M -xc - | awk $(_awk) ) \
 	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite=no \
 	--enable-bcmath --enable-calendar --enable-ctype --enable-exif \
 	--enable-ftp --enable-soap \
@@ -46,6 +53,11 @@ $(RUMPRUN_PKGS_DIR)/lib/libpng16.a:
 .NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libxml2.a
 $(RUMPRUN_PKGS_DIR)/lib/libxml2.a:
 	$(MAKE) -C ../libxml2
+
+.PHONY: stupid
+stupid:
+	@echo _awk := $(_awk)
+	@echo CONFIGURE_OPTS := $(CONFIGURE_OPTS)
 
 bin/php-cgi: build/sapi/cgi/php-cgi
 	mkdir -p bin
