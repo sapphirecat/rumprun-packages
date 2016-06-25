@@ -2,10 +2,20 @@ include ../Makefile.inc
 
 UPSTREAM=http://de1.php.net/get/php-7.0.7.tar.bz2/from/this/mirror
 TARBALL=php.tar.bz2
-LIBS=$(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRUN_PKGS_DIR)/lib/libxml2.a
+LIBS:=$(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRUN_PKGS_DIR)/lib/libxml2.a \
+	$(RUMPRUN_PKGS_DIR)/lib/libpng16.a $(RUMPRUN_PKGS_DIR)/lib/libjpeg.a
 
+# check for a specific build instruction targeted to us, else do the default.
+ifdef php7_CONFIGURE_OPTS
+CONFIGURE_OPTS := $(php7_CONFIGURE_OPTS)
+ifneq ($(php7_LIBS),)
+LIBS := $(php7_LIBS)
+endif
+endif
+
+ifeq ($(CONFIGURE_OPTS),)
 # Mega build: all currently available features.
-all: CONFIGURE_OPTS := --enable-cli \
+CONFIGURE_OPTS := --enable-cli \
 	--enable-zip --enable-mbstring --enable-sockets \
 	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite=no \
 	--enable-bcmath --enable-calendar --enable-ctype --enable-exif \
@@ -14,6 +24,8 @@ all: CONFIGURE_OPTS := --enable-cli \
 		--without-webp-dir --without-xpm-dir \
 		--without-freetype-dir --enable-gd-native-ttf --enable-gd-jis-conv \
 	--with-curl=$(RUMPRUN_PKGS_DIR) --with-libxml-dir=$(RUMPRUN_PKGS_DIR)
+endif
+
 
 all: bin/php-cgi bin/php images $(LIBS)
 
