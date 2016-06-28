@@ -54,10 +54,6 @@ $(RUMPRUN_PKGS_DIR)/lib/libpng16.a:
 $(RUMPRUN_PKGS_DIR)/lib/libxml2.a:
 	$(MAKE) -C ../libxml2
 
-.PHONY: stupid
-stupid:
-	@echo _awk := $(_awk)
-	@echo CONFIGURE_OPTS := $(CONFIGURE_OPTS)
 
 bin/php-cgi: build/sapi/cgi/php-cgi
 	mkdir -p bin
