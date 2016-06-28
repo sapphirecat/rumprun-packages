@@ -1,14 +1,13 @@
 Overview
 ========
 
-Packaging of the [libcurl](http://curl.haxx.se/libcurl/) a URL transfer library supporting multiple protocols.
-Currently configured with support for ssl.
+Packaging of [libpng](http://www.libpng.org/pub/png/libpng.html), a graphic format encoding library.
 
 Maintainer
 ----------
 
-* David Smith, rumpkernel@smalldave.com
-* Github: @smalldave
+* Sapphire Cat, devel@sapphirepaw.org
+* Github: @sapphirecat
 
 
 Instructions

@@ -1,14 +1,14 @@
 Overview
 ========
 
-Packaging of the [libcurl](http://curl.haxx.se/libcurl/) a URL transfer library supporting multiple protocols.
-Currently configured with support for ssl.
+Packaging of [libjpeg-turbo](http://www.libjpeg-turbo.org/), a graphics format library.
+Currently compiled without SSE to avoid NASM requirement.
 
 Maintainer
 ----------
 
-* David Smith, rumpkernel@smalldave.com
-* Github: @smalldave
+* Sapphire Cat, devel@sapphirepaw.org
+* Github: @sapphirecat
 
 
 Instructions
