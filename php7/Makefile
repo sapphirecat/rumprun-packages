@@ -3,6 +3,7 @@ include ../Makefile.inc
 UPSTREAM=http://de1.php.net/get/php-7.0.7.tar.bz2/from/this/mirror
 TARBALL=php.tar.bz2
 LIBS:=$(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRUN_PKGS_DIR)/lib/libxml2.a \
+	$(RUMPRUN_PKGS_DIR)/lib/libmemcached.a \
 	$(RUMPRUN_PKGS_DIR)/lib/libpng16.a $(RUMPRUN_PKGS_DIR)/lib/libjpeg.a
 
 # check for a specific build instruction targeted to us, else do the default.
@@ -30,6 +31,8 @@ CONFIGURE_OPTS := --enable-cli \
 	--with-gd --with-jpeg-dir=$(RUMPRUN_PKGS_DIR) --with-png-dir=$(RUMPRUN_PKGS_DIR) \
 		--without-webp-dir --without-xpm-dir \
 		--without-freetype-dir --enable-gd-native-ttf --enable-gd-jis-conv \
+	--enable-memcached --with-libmemcached-dir=$(RUMPRUN_PKGS_DIR) \
+		--enable-memcached-json --disable-memcached-sasl \
 	--with-curl=$(RUMPRUN_PKGS_DIR) --with-libxml-dir=$(RUMPRUN_PKGS_DIR)
 endif
 
@@ -53,6 +56,10 @@ $(RUMPRUN_PKGS_DIR)/lib/libpng16.a:
 .NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libxml2.a
 $(RUMPRUN_PKGS_DIR)/lib/libxml2.a:
 	$(MAKE) -C ../libxml2
+
+.NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libmemcached.a
+$(RUMPRUN_PKGS_DIR)/lib/libmemcached.a:
+	$(MAKE) -C ../libmemcached
 
 
 bin/php-cgi: build/sapi/cgi/php-cgi
@@ -80,7 +87,7 @@ build/sapi/cli/php: build/Makefile build/sapi/cgi/php-cgi
 # unikernel.
 
 build/Makefile: $(LIBS) build/configure
-	(cd build && ./configure --host=$(RUMPRUN_TOOLCHAIN_TUPLE) \
+	(cd build && env CXX="$(RUMPRUN_CXX)" ./configure --host=$(RUMPRUN_TOOLCHAIN_TUPLE) \
 	    --disable-pcntl --without-sqlite3 --without-iconv \
 	    --disable-fileinfo --disable-opcache \
 	    --disable-shared $(CONFIGURE_OPTS))
@@ -88,10 +95,16 @@ build/Makefile: $(LIBS) build/configure
 dl/$(TARBALL):
 	mkdir -p dl
 	../scripts/fetch.sh ${UPSTREAM} dl/$(TARBALL)
+	git clone -b php7 https://github.com/php-memcached-dev/php-memcached.git dl/memcached
 
 build/configure: | dl/$(TARBALL)
 	mkdir -p build
 	(cd build && tar -xj --strip-components 1 -f ../dl/$(TARBALL))
+	if ! test -e build/ext/memcached ; then \
+		(cd build && cp -a ../dl/memcached ext/memcached && \
+		../../scripts/apply-patches.sh ./ ../patches/*) \
+	fi
+	(cd build && ./buildconf --force)
 
 .PHONY: images
 images: images/data.iso
