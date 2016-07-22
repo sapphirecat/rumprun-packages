@@ -95,7 +95,7 @@ build/Makefile: $(LIBS) build/configure
 dl/$(TARBALL):
 	mkdir -p dl
 	../scripts/fetch.sh ${UPSTREAM} dl/$(TARBALL)
-	git clone -b php7 https://github.com/php-memcached-dev/php-memcached.git dl/memcached
+	[ -d dl/memcached ] || git clone -b php7 https://github.com/php-memcached-dev/php-memcached.git dl/memcached
 
 build/configure: | dl/$(TARBALL)
 	mkdir -p build
