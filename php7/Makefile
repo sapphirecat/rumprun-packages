@@ -1,7 +1,8 @@
 include ../Makefile.inc
 
-UPSTREAM=http://de1.php.net/get/php-7.0.9.tar.bz2/from/this/mirror
-TARBALL=php.tar.bz2
+PHP_VERSION := 7.0.9
+UPSTREAM := http://de1.php.net/get/php-$(PHP_VERSION).tar.bz2/from/this/mirror
+TARBALL := php-$(PHP_VERSION).tar.bz2
 LIBS:=$(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRUN_PKGS_DIR)/lib/libxml2.a \
 	$(RUMPRUN_PKGS_DIR)/lib/libmemcached.a \
 	$(RUMPRUN_PKGS_DIR)/lib/libpng16.a $(RUMPRUN_PKGS_DIR)/lib/libjpeg.a
