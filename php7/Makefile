@@ -24,7 +24,7 @@ _awk := '/zlib.h/ { n=split($$0, p, "/"); r=""; for (i=2; i<= n-2; i++) { r=r "/
 
 # Mega build: all currently available features.
 CONFIGURE_OPTS := --enable-cli \
-	--enable-zip --with-zlib --enable-mbstring --enable-sockets \
+	--enable-zip --with-zlib --enable-mbstring --enable-sockets --enable-opcache \
 	--with-zlib-dir=$(shell echo "\#include <zlib.h>" | $(RUMPRUN_TOOLCHAIN_TUPLE)-gcc -M -xc - | awk $(_awk) ) \
 	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite=no \
 	--enable-bcmath --enable-calendar --enable-ctype --enable-exif \
@@ -90,7 +90,7 @@ build/sapi/cli/php: build/Makefile build/sapi/cgi/php-cgi
 build/Makefile: $(LIBS) build/configure
 	(cd build && env CXX="$(RUMPRUN_CXX)" ./configure --host=$(RUMPRUN_TOOLCHAIN_TUPLE) \
 	    --disable-pcntl --without-sqlite3 --without-iconv \
-	    --disable-fileinfo --disable-opcache \
+	    --disable-fileinfo \
 	    --disable-shared $(CONFIGURE_OPTS))
 
 dl/$(TARBALL):
