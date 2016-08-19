@@ -81,7 +81,6 @@ build/sapi/cli/php: build/Makefile build/sapi/cgi/php-cgi
 #
 # pcntl: there are no processes
 # fileinfo: can't run test program while cross-compiling
-# opcache: can't detect SHM flavors when cross-compiling
 #
 # Other than that, we try to leave all defaults enabled (or disabled for
 # external libs) and enable whatever is non-default but supportable in the
