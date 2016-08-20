@@ -8,4 +8,4 @@ rumprun ${1+"$@"} qemu -i -M 512 \
 	-W qnet0,inet,dhcp \
 	-b ../images/data.iso,/data \
 	-e PHP_FCGI_MAX_REQUESTS=0 \
-	-- ../bin/php-cgi.bin -c /conf/php.ini -b "$GUEST_PORT"
+	-- ../bin/php-cgi.bin -c /data/conf/php.ini -b "$GUEST_PORT"
