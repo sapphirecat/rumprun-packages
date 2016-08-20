@@ -2,7 +2,8 @@
 set -x
 GUEST_PORT="${GUEST_PORT:-${1-9000}}"
 HOST_PORT="${HOST_PORT:-${2-8080}}"
-rumprun ${1+"$@"} qemu -i -M 512 \
+HYPERVISOR="${HYPERVISOR:-qemu}"
+rumprun ${1+"$@"} "$HYPERVISOR" -i -M 512 \
 	-I 'qnet0,vioif,-net user' \
 	-g "-redir tcp:${HOST_PORT}::${GUEST_PORT}" \
 	-W qnet0,inet,dhcp \
