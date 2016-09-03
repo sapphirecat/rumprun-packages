@@ -3,8 +3,9 @@ set -x
 GUEST_PORT="${GUEST_PORT:-${1-9000}}"
 HOST_PORT="${HOST_PORT:-${2-8080}}"
 HYPERVISOR="${HYPERVISOR:-qemu}"
-# php has a heap limit of 128M by default, provide some code/stack space on top of that
-MEM_LIMIT="${MEM_LIMIT:-192}"
+# we have ~64 MB of binary, 64 MB of opcache, and a 128 MB memory limit;
+# and rumprun currently splits half of the RAM between app and kernel.
+MEM_LIMIT="${MEM_LIMIT:-512}"
 rumprun ${1+"$@"} "$HYPERVISOR" -i -M "$MEM_LIMIT" \
 	-I 'qnet0,vioif,-net user' \
 	-g "-redir tcp:${HOST_PORT}::${GUEST_PORT}" \
