@@ -12,6 +12,7 @@ build/libpcre.la: build/Makefile
 
 PCRE_CONF_OPTS += \
 	--prefix=$(RUMPRUN_PKGS_DIR) \
+	--enable-unicode-properties \
 	--disable-shared
 
 build/Makefile: build/configure

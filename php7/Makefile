@@ -4,7 +4,7 @@ PHP_VERSION := 7.0.11
 UPSTREAM := http://de1.php.net/get/php-$(PHP_VERSION).tar.bz2/from/this/mirror
 TARBALL := php-$(PHP_VERSION).tar.bz2
 LIBS := $(RUMPRUN_PKGS_DIR)/lib/libssl.a $(RUMPRUN_PKGS_DIR)/lib/libcurl.a $(RUMPRUN_PKGS_DIR)/lib/libxml2.a \
-	$(RUMPRUN_PKGS_DIR)/lib/libmemcached.a \
+	$(RUMPRUN_PKGS_DIR)/lib/libpcre.a $(RUMPRUN_PKGS_DIR)/lib/libmemcached.a \
 	$(RUMPRUN_PKGS_DIR)/lib/libpng16.a $(RUMPRUN_PKGS_DIR)/lib/libjpeg.a
 
 # check for a specific build instruction targeted to us, else do the default.
@@ -29,6 +29,7 @@ CONFIGURE_OPTS := --enable-cli \
 	--with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite=no \
 	--enable-bcmath --enable-calendar --enable-ctype --enable-exif \
 	--enable-ftp --enable-soap \
+	--with-pcre-regex=$(RUMPRUN_PKGS_DIR) \
 	--with-gd --with-jpeg-dir=$(RUMPRUN_PKGS_DIR) --with-png-dir=$(RUMPRUN_PKGS_DIR) \
 		--without-webp-dir --without-xpm-dir \
 		--without-freetype-dir --enable-gd-native-ttf --enable-gd-jis-conv \
@@ -41,6 +42,10 @@ endif
 all: bin/php-cgi bin/php images $(LIBS)
 
 include ../Makefile.deps
+
+.NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libpcre.a
+$(RUMPRUN_PKGS_DIR)/lib/libpcre.a:
+	$(MAKE) -C ../pcre
 
 .NOTPARALLEL: $(RUMPRUN_PKGS_DIR)/lib/libcurl.a
 $(RUMPRUN_PKGS_DIR)/lib/libcurl.a:
